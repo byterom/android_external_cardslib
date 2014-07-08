@@ -365,8 +365,9 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
      * Enables an undo message after a swipe action
      *
      * @param enableUndo <code>true</code> to enable an undo message
+     * @param parentView The parent View that contains the Undo Bar View
      */
-    public void setEnableUndo(boolean enableUndo) {
+    public void setEnableUndo(boolean enableUndo, View parentView) {
         mEnableUndo = enableUndo;
         if (enableUndo) {
             mInternalObjects = new HashMap<String, Card>();
@@ -381,14 +382,9 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
                 if (mUndoBarUIElements==null)
                     mUndoBarUIElements=new UndoBarController.DefaultUndoBarUIElements();
 
-                if (mContext!=null && mContext instanceof Activity) {
-                    View undobar = ((Activity) mContext).findViewById(mUndoBarUIElements.getUndoBarId());
-                    if (undobar != null) {
-                        mUndoBarController = new UndoBarController(undobar, this, mUndoBarUIElements);
-                    }
-                }else{
-                    Log.e(TAG,"Undo Action requires a valid Activity context");
-                    throw new IllegalArgumentException("Undo Action requires a valid Activity context");
+                View undobar = parentView.findViewById(mUndoBarUIElements.getUndoBarId());
+                if (undobar != null) {
+                    mUndoBarController = new UndoBarController(undobar, this, mUndoBarUIElements);
                 }
             }
         }else{
