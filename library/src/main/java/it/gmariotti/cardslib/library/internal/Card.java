@@ -400,7 +400,7 @@ public class Card extends BaseCard {
      * Interface to listen for any callbacks when card is swiped in a List
      */
     public interface OnUndoSwipeListListener {
-        public void onUndoSwipe(Card card);
+        public void onUndoSwipe(Card card, boolean timedOut);
     }
 
     /**
@@ -408,7 +408,7 @@ public class Card extends BaseCard {
      */
     public void onUndoSwipeListCard() {
         if (isSwipeable() && mOnUndoSwipeListListener != null) {
-            mOnUndoSwipeListListener.onUndoSwipe(this);
+            mOnUndoSwipeListListener.onUndoSwipe(this, false);
         }
     }
 
