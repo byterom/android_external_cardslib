@@ -1,6 +1,29 @@
 Change Log
 ===============================================================================
 
+Version 1.9.0 *(2014-08-30)*
+----------------------------
+* LIB: Added a method to expand and collpase the card in programmatic way [(doc)](/doc/EXPAND.md#expand-the-card-in-programmatic-way)
+* LIB: Added a callback at the start of the expansion/collapsing animation [(doc)](/doc/EXPAND.md#listeners)
+* LIB: Added the ability to expand and collapse the card with a longClick [(doc)](/doc/EXPAND.md#expand-the-card-with-a-longclick)
+* LIB: Added a method to add dinamically Sections to a `SectionedCardAdapter` [(doc)](/doc/CARDLIST.md#sectionedcardlist)
+* LIB: Added a feature to restrict card swipe direction [(doc)](/doc/CARDLIST.md#swipe-and-dismissablemanager)
+* LIB-EXTRA: Updated the drap and drop list. Now you can drag over the card [(doc)](/doc/DRAGDROPLIST.md) 
+* LIB-EXTRA: Updated ListViewAnimations dependency to 3.1.0
+
+  It contains a little **BREAKING CHANGE** on the `mListView.setOnItemMovedListener`. listener [(doc)](/doc/DRAGDROPLIST.md) 
+
+* DEMO: Added an example to expand/collapse action in programmatic way
+* DEMO-EXTRA: Updated all dependencies to last releases
+ 
+Version 1.8.0 *(2014-07-14)*
+----------------------------
+* LIB: Added a `SectionedCardAdapter` which allows to display a `CardList` with Sections [(doc)](/doc/CARDLIST.md#sectionedcardlist)
+* LIB: Added a parameter to customize the swipe action [(doc)](/doc/CARDLIST.md#swipe-and-undo-in-cardlistview)
+* LIB: Fixed the CAB feature with the ForegroundLinearLayout
+* DEMO: Added an example with `SectionedCardAdapter`
+
+
 Version 1.7.3 *(2014-06-20)*
 ----------------------------
 * LIB: Removed labels app_name to prevent issue with the new Manifest merger

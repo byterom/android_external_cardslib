@@ -5,7 +5,10 @@ In this page you can find info about:
 * [Creating a base CardExpand](#creating-a-base-cardexpand)
 * [Standard Expand](#standard-expand)
 * [Custom Expand inflating your inner layout](#custom-expand-inflating-your-inner-layout)
+* [Listeners](#listeners)
 * [Expand the card by clicking on different view](#expand-the-card-by-clicking-on-different-view)
+* [Expand the card in programmatic way](#expand-the-card-in-programmatic-way)
+* [Expand the card with a longClick](#expand-the-card-with-a-longclick)
 * [CardExpand and CardListView](#cardexpand-and-cardlistview)
 
 
@@ -101,10 +104,13 @@ Then you can add this custom `CustomExpandCard` to your `Card`:
 
 ![Screen](/demo/images/header/expandCustom.png)
 
+
+### Listeners
+
 You can use these listeners to listen any callbacks when animations end.
 
-* `Card.OnExpandAnimatorEndListener` invoked  when expand animation ends
-* `Card.OnCollapseAnimatorEndListener` invoked when collapse animator ends.
+* `card.OnExpandAnimatorEndListener` invoked  when expand animation ends
+* `card.OnCollapseAnimatorEndListener` invoked when collapse animator ends.
 
 Example:
 
@@ -112,6 +118,22 @@ Example:
         card.setOnExpandAnimatorEndListener(new Card.OnExpandAnimatorEndListener() {
             @Override
             public void onExpandEnd(Card card) {
+                //Do something
+            }
+        });
+```
+
+Also you can use these listeners to listen any callbacks when animations start.
+
+* `card.OnExpandAnimatorStartListener` invoked  when expand animation starts.
+* `card.OnCollapseAnimatorStartListener` invoked when collapse animator starts.
+
+Example:
+
+``` java
+        card.setOnExpandAnimatorStartListener(new Card.OnExpandAnimatorStartListener() {
+            @Override
+            public void onExpandStart(Card card) {
                 //Do something
             }
         });
@@ -282,6 +304,62 @@ You can also use this feature with a `ListView`.
 ```
 
 You can see some examples in [`ExpandPicassoFragment`](/demo/extras/src/main/java/it/gmariotti/cardslib/demo/extras/fragment/ExpandPicassoFragment.java).
+
+### Expand the card in programmatic way
+
+You can expand and collapse the `Card` in programmatic way.
+
+You have to set the `CardExpand` and you layout as described above.
+
+Also if you card **hasn't** a `ViewToClickToExpand` you have to set it.
+
+``` java
+    ViewToClickToExpand viewToClickToExpand = ViewToClickToExpand.builder().enableForExpandAction();
+    card.setViewToClickToExpand(viewToClickToExpand);
+```
+
+Then in your code you can expand, collapse or toggle your `Card` using:
+
+``` java
+    //To expand
+    card.doExpand();
+    
+    //To collapse
+    card.doCollapse();
+    
+    //To toggle
+    card.doToogleExpand();
+```
+
+### Expand the card with a longClick
+
+You can use a long click instead of the single click to expand/collapse cards.
+
+You can use the method `useLongClick(true)` on your `ViewToClickToExpand`.
+
+For example:
+``` java
+    ViewToClickToExpand viewToClickToExpand =
+                    ViewToClickToExpand.builder()
+                            .highlightView(false)
+                            .useLongClick(true)
+                            .setupCardElement(ViewToClickToExpand.CardElementUI.CARD);
+    card.setViewToClickToExpand(viewToClickToExpand);
+```
+
+Pay attention: this feature is not enabled for the built-in expand button in Header.
+
+
+Also you can use a simple:
+
+``` java
+  view.setOnLongClickListener(new OnLongClickListener(){     
+           @Override
+           public boolean onLongClick(View view) {
+                view.doToogleExpand();
+           }
+  });
+``` 
 
 
 ### CardExpand and CardListView

@@ -38,6 +38,8 @@ import it.gmariotti.cardslib.library.R;
 import it.gmariotti.cardslib.library.internal.base.BaseCardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
 import it.gmariotti.cardslib.library.view.CardView;
+import it.gmariotti.cardslib.library.view.listener.dismiss.DefaultDismissableManager;
+import it.gmariotti.cardslib.library.view.listener.dismiss.Dismissable;
 import it.gmariotti.cardslib.library.view.listener.SwipeDismissListViewTouchListener;
 import it.gmariotti.cardslib.library.view.listener.SwipeOnScrollListener;
 import it.gmariotti.cardslib.library.view.listener.UndoBarController;
@@ -90,12 +92,6 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
     protected SwipeDismissListViewTouchListener mOnTouchListener;
 
     /**
-     * Swipe direction, to be used when mOnTouchListener is created
-     */
-    protected SwipeDismissListViewTouchListener.SwipeDirection mSwipeDirection =
-                                SwipeDismissListViewTouchListener.SwipeDirection.BOTH;
-
-    /**
      * Used to enable an undo message after a swipe action
      */
     protected boolean mEnableUndo=false;
@@ -111,6 +107,10 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
      */
     protected HashMap<String /* id */,Card>  mInternalObjects;
 
+    /**
+     * Dismissable Manager
+     */
+    protected Dismissable mDismissable;
 
     // -------------------------------------------------------------
     // Constructors
@@ -201,7 +201,12 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
         if (card.isSwipeable()){
             if (mOnTouchListener == null){
                 mOnTouchListener = new SwipeDismissListViewTouchListener(mCardListView, mCallback);
-                mOnTouchListener.setSwipeDirection(mSwipeDirection);
+
+                //Configure the default DismissableManager
+                if (mDismissable == null) mDismissable = new DefaultDismissableManager();
+                mDismissable.setAdapter(this);
+                mOnTouchListener.setDismissable(mDismissable);
+
                 // Setting this scroll listener is required to ensure that during
                 // ListView scrolling, we don't look for swipes.
                 if (mCardListView.getOnScrollListener() == null){
@@ -235,18 +240,6 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
         cardView.setOnExpandListAnimatorListener(mCardListView);
     }
 
-    /**
-     * Sets this CardArrayAdapter so that only a single swipe direction will
-     * be enabled.
-     *
-     */
-    public void setSwipeDirection(SwipeDismissListViewTouchListener.SwipeDirection swipeDirection) {
-        if (mOnTouchListener != null) {
-            mOnTouchListener.setSwipeDirection(swipeDirection);
-        }
-        mSwipeDirection = swipeDirection;
-    }
-
     // -------------------------------------------------------------
     //  SwipeListener and undo action
     // -------------------------------------------------------------
@@ -257,7 +250,7 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
 
         @Override
         public boolean canDismiss(int position, Card card) {
-            return card.isSwipeable();
+            return mDismissable.isDismissable(position, card);
         }
 
         @Override
@@ -272,22 +265,29 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
 
             //Remove cards and notifyDataSetChanged
             for (int position : reverseSortedPositions) {
-                Card card = getItem(position);
-                itemPositions[i]=position;
-                itemIds[i]=card.getId();
-                i++;
+                Card card = null;
+                if (listView.getAdapter() != null && listView.getAdapter().getItem(position) instanceof Card)
+                    card = (Card) listView.getAdapter().getItem(position);
+                //Card card = getItem(position);
 
-                /*
-                if (card.isExpanded()){
-                    if (card.getCardView()!=null && card.getCardView().getOnExpandListAnimatorListener()!=null){
-                        //There is a List Animator.
-                        card.getCardView().getOnExpandListAnimatorListener().onCollapseStart(card.getCardView(), card.getCardView().getInternalExpandLayout());
-                    }
-                }*/
-                removedCards.add(card);
-                remove(card);
-                if (card.getOnSwipeListener() != null){
+                if (card != null) {
+                    itemPositions[i] = position;
+                    itemIds[i] = card.getId();
+                    i++;
+
+                    /*
+                    if (card.isExpanded()){
+                        if (card.getCardView()!=null && card.getCardView().getOnExpandListAnimatorListener()!=null){
+                            //There is a List Animator.
+                            card.getCardView().getOnExpandListAnimatorListener().onCollapseStart(card.getCardView(), card.getCardView().getInternalExpandLayout());
+                        }
+                    }*/
+                    remove(card);
+                    if (card.getOnSwipeListener() != null) {
                         card.getOnSwipeListener().onSwipe(card);
+                    }
+                }else{
+                    Log.e(TAG,"Error on swipe action. Impossible to retrieve the card from position");
                 }
             }
             notifyDataSetChanged();
@@ -493,4 +493,13 @@ public class CardArrayAdapter extends BaseCardArrayAdapter implements UndoBarCon
     public UndoBarController getUndoBarController() {
         return mUndoBarController;
     }
+
+    /**
+     * Sets a custom DismissableManager
+     * @param dismissable
+     */
+    public void setDismissable(Dismissable dismissable) {
+        mDismissable = dismissable;
+    }
+
 }

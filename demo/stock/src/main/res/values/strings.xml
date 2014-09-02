@@ -102,6 +102,7 @@
     <string name="carddemo_title_expandablelistcard">ExpandableListCard</string>
     <string name="carddemo_title_carwithlist_card">Card with List</string>
     <string name="carddemo_title_overflow_animation">Overflow animation (experimental)</string>
+    <string name="carddemo_title_sectioned_list">Sectioned List</string>
 
     <!-- Section -->
     <string name="demo_section_header_standard">Standard Header without buttons</string>
@@ -139,6 +140,8 @@
     <string name="demo_section_card_expand_example3">Expand clicking on the text</string>
     <string name="demo_section_card_expand_example4">Expand clicking on the image</string>
     <string name="demo_section_card_expand_example5">Expand section inside the card</string>
+    <string name="demo_section_card_expand_example6">Expand the card in programmatic way</string>
+    <string name="demo_section_card_expand_example6_text">Click here to expand/collapse the card</string>
 
     <string name="demo_section_card_changevalue_title">Click Refresh Icon to refresh card</string>
 
